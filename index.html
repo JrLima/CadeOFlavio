@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Cadê o Flávio?</title>
+<meta name="theme-color" content="#1E3F7A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Meta tags para robôs de redes sociais: mantenha iguais ao config.js (robôs não executam JS) -->
+<meta name="description" content="Ache o Flávio, o único de paletó e gravata, no meio da multidão espalhada pelo mundo.">
+<meta property="og:title" content="Cadê o Flávio?">
+<meta property="og:description" content="Ache o Flávio, o único de paletó e gravata, no meio da multidão espalhada pelo mundo.">
+<meta property="og:url" content="https://JrLima.github.io/CadeOFlavio">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@800&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main id="stage" class="stage" aria-label="Mapa-múndi com a multidão">
+  <canvas id="game" class="game-canvas"></canvas>
+  <div id="fx" class="fx" aria-hidden="true"></div>
+
+  <div class="hud" id="hud" role="status" aria-live="polite">
+    <div class="hud-item"><span class="hud-label" data-text="hud.hits"></span><span class="hud-value" id="hud-hits">0</span></div>
+    <div class="hud-item"><span class="hud-label" data-text="hud.average"></span><span class="hud-value" id="hud-avg">–</span></div>
+    <div class="hud-item"><span class="hud-label" data-text="hud.best"></span><span class="hud-value" id="hud-best">–</span></div>
+    <div class="hud-item" id="hud-misses-wrap" hidden><span class="hud-label" data-text="hud.misses"></span><span class="hud-value" id="hud-misses">0</span></div>
+  </div>
+
+  <button type="button" class="share-fab" id="btn-share" data-aria="hud.share">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span data-text="hud.share"></span>
+  </button>
+
+  <div class="actions" id="actions">
+    <button type="button" class="icon-btn" id="btn-fullscreen" data-aria="hud.fullscreen" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</main>
+
+<!-- Tela inicial -->
+<section id="start" class="screen screen-start">
+  <canvas id="start-crowd" class="start-crowd" aria-hidden="true"></canvas>
+  <div class="card start-card">
+    <div class="portrait" id="start-portrait" aria-hidden="true"></div>
+    <div class="start-copy">
+      <h1 class="title"><span data-text="start.titleBefore"></span> <span class="accent" data-text="start.titleName"></span></h1>
+      <p class="lead"><span data-text="start.lead"></span><br><span data-text="start.instruction"></span></p>
+      <button type="button" class="btn btn-primary" id="btn-play" data-text="start.play"></button>
+      <p class="note" data-text="start.fullscreenHint"></p>
+      <p class="note note-soft" data-text="start.memoryNote"></p>
+    </div>
+  </div>
+</section>
+
+<!-- Gire o celular -->
+<section id="rotate" class="screen screen-rotate" hidden>
+  <div class="rotate-box">
+    <svg class="rotate-phone" viewBox="0 0 64 100" aria-hidden="true">
+      <rect x="4" y="4" width="56" height="92" rx="10" fill="#FFFDF7"/>
+      <rect x="10" y="14" width="44" height="68" rx="3" fill="#1E3F7A"/>
+      <circle cx="32" cy="89" r="3" fill="#1E2A3A"/>
+    </svg>
+    <h2 class="title title-sm" data-text="rotate.title"></h2>
+    <p class="lead lead-light" data-text="rotate.body"></p>
+  </div>
+</section>
+
+<!-- Compartilhar -->
+<div id="share" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="share-title">
+  <div class="card modal-card">
+    <button type="button" class="close-btn" id="btn-share-close" data-aria="share.close">×</button>
+    <div class="share-preview">
+      <img id="share-img" alt="">
+      <p id="share-generating" class="note" data-text="share.generating"></p>
+    </div>
+    <div class="share-side">
+      <h2 class="title title-sm" id="share-title" data-text="share.modalTitle"></h2>
+      <div class="share-buttons">
+        <button type="button" class="btn btn-share btn-wa" id="share-wa"><span data-text="share.whatsapp"></span></button>
+        <button type="button" class="btn btn-share btn-x" id="share-x"><span data-text="share.x"></span></button>
+        <button type="button" class="btn btn-share btn-ig" id="share-ig"><span data-text="share.instagram"></span></button>
+        <button type="button" class="btn btn-share btn-save" id="share-save"><span data-text="share.save"></span></button>
+      </div>
+      <p class="note" id="share-hint"></p>
+      <p class="disclaimer" data-text="share.disclaimer"></p>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="config.js"></script>
+<script src="map-data.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
